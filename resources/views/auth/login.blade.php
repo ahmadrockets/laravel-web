@@ -12,6 +12,7 @@
 
   <!-- CSS Libraries -->
   <link rel="stylesheet" href="{{asset('stisla/modules/bootstrap-social/bootstrap-social.css')}}">
+  <link rel="stylesheet" href="{{asset('stisla/modules/izitoast/css/iziToast.min.css')}}">
 
   <!-- Template CSS -->
   <link rel="stylesheet" href="{{asset('stisla/css/style.css')}}">
@@ -115,6 +116,29 @@
   <!-- Template JS File -->
   <script src="{{asset('stisla/js/scripts.js')}}"></script>
   <script src="{{asset('stisla/js/custom.js')}}"></script>
+
+  <!-- JS Libraies -->
+  <script src="{{asset('stisla/modules/izitoast/js/iziToast.min.js')}}"></script>
+  <!-- Page Specific JS File -->
+  <script src="{{asset('stisla/js/page/modules-toastr.js')}}"></script>
+  @if (session('success'))
+  <script>
+    iziToast.success({
+      title: 'Success',
+      message: '{{session("success")}}',
+      position: 'topRight'
+    });
+  </script>
+  @endif
+  @foreach ($errors->all() as $error)
+  <script>
+    iziToast.warning({
+      title: 'Failed',
+      message: '{{ $error }}',
+      position: 'topRight'
+    });
+  </script>
+  @endforeach
 </body>
 
 </html>

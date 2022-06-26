@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
@@ -18,17 +19,25 @@
   <!-- Template CSS -->
   <link rel="stylesheet" href="{{asset('stisla/css/style.css')}}">
   <link rel="stylesheet" href="{{asset('stisla/css/components.css')}}">
-  @yield('css')
-<!-- Start GA -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-94034622-3"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
 
-  gtag('config', 'UA-94034622-3');
-</script>
-<!-- /END GA --></head>
+
+  <link rel="stylesheet" href="{{asset('stisla/modules/izitoast/css/iziToast.min.css')}}">
+
+  @yield('css')
+  <!-- Start GA -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-94034622-3"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+
+    gtag('config', 'UA-94034622-3');
+  </script>
+  <!-- /END GA -->
+</head>
 
 <body>
   <div id="app">
@@ -55,7 +64,7 @@
   <script src="{{asset('stisla/modules/nicescroll/jquery.nicescroll.min.js')}}"></script>
   <script src="{{asset('stisla/modules/moment.min.js')}}"></script>
   <script src="{{asset('stisla/js/stisla.js')}}"></script>
-  
+
   <!-- JS Libraies -->
   <script src="{{asset('stisla/modules/simple-weather/jquery.simpleWeather.min.js')}}"></script>
   <script src="{{asset('stisla/modules/chart.min.js')}}"></script>
@@ -66,11 +75,34 @@
 
   <!-- Page Specific JS File -->
   <script src="{{asset('stisla/js/page/index-0.js')}}"></script>
-  
+
   <!-- Template JS File -->
   <script src="{{asset('stisla/js/scripts.js')}}"></script>
   <script src="{{asset('stisla/js/custom.js')}}"></script>
-
+  
+  <!-- JS Libraies -->
+  <script src="{{asset('stisla/modules/izitoast/js/iziToast.min.js')}}"></script>
+  <!-- Page Specific JS File -->
+  <script src="{{asset('stisla/js/page/modules-toastr.js')}}"></script>
+  @if (session('success'))
+  <script>
+    iziToast.success({
+      title: 'Success',
+      message: '{{session("success")}}',
+      position: 'topRight'
+    });
+  </script>
+  @endif
+  @foreach ($errors->all() as $error)
+  <script>
+    iziToast.warning({
+      title: 'Failed',
+      message: '{{ $error }}',
+      position: 'topRight'
+    });
+  </script>
+  @endforeach
   @stack('scripts')
 </body>
+
 </html>

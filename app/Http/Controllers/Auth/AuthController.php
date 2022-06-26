@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\AuthService;
-use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -17,17 +17,18 @@ class AuthController extends Controller
 
     public function index()
     {
+        if(Auth::check()){
+            return redirect('/');
+        }
         return view('auth.login');
     }
 
     public function authenticate(Request $request)
     {
         if($this->authService->doLogin($request)){
-            echo "masuk";
+            return redirect('/')->withSuccess('You have successfully logged in');
         }else{
-            return back()->withErrors([
-                'message' => ['The provided password does not match our records.']
-            ]);
+            return back()->withErrors('Opps! You have entered invalid credentials');
         }
     }
 
@@ -35,9 +36,9 @@ class AuthController extends Controller
     {
         try {
             $this->authService->doLogout($request);
-            return redirect('/login');
+            return redirect('/login')->withSuccess('You have successfully logged out');;
         } catch (\Throwable $th) {
-            return redirect('/');
+            return redirect('/')->withErrors('Opps! something went wrong');
         }
     }
 
