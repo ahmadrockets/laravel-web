@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,4 +16,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->middleware('auth');
+Route::get('login', [AuthController::class, 'index'])->name('login');
+Route::post('authenticate', [AuthController::class, 'authenticate'])->name('auth.authenticate');
+Route::post('logout', [AuthController::class, 'logout'])->name('auth.logout');
+
+Route::get('register', [AuthController::class, 'register'])->name('auth.register');
+Route::get('forgotpassword', [AuthController::class, 'forgotpassword'])->name('auth.forgotpassword');
