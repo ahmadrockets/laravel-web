@@ -55,9 +55,14 @@ class AuthController extends Controller
             return redirect('/register')->withErrors('Oops! something went wrong | '.$th->getMessage());;
         }
     }
-    public function verifyAccount(Request $request)
+    public function verifyAccount(Request $request, $token)
     {
-        
+        try {
+            $verifyUser = $this->authService->doVerifyUser($token);
+            return redirect('/login')->withSuccess($verifyUser);;
+        } catch (\Throwable $th) {
+            return redirect('/login')->withErrors('Oops! something went wrong | ' . $th->getMessage());;
+        }
     }
     public function forgotpassword()
     {
