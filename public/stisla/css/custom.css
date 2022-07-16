@@ -6,3 +6,8 @@
  */
 
 /*# sourceMappingURL=custom.css.map */
+.required-label-form::after{
+  content: " *";
+  color:red !important;
+  font-weight: bolder !important;
+}

@@ -46,6 +46,19 @@ class AuthController extends Controller
     {
         return view('auth.register');
     }
+    public function doRegister(Request $request)
+    {
+        try {
+            $this->authService->doRegister($request);
+            return redirect('/login')->withSuccess('Success register user, please verify your email');;
+        } catch (\Throwable $th) {
+            return redirect('/register')->withErrors('Oops! something went wrong | '.$th->getMessage());;
+        }
+    }
+    public function verifyAccount(Request $request)
+    {
+        
+    }
     public function forgotpassword()
     {
         return view('auth.forgotpassword');
