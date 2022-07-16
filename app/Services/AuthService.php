@@ -89,6 +89,7 @@ class AuthService
             } else {
                 $message = "Your e-mail is already verified. You can now login.";
             }
+            return $message;
         }else{
             throw new \ErrorException($message);
         }
