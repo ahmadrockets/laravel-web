@@ -45,21 +45,31 @@
 
             <div class="card card-primary">
               <div class="card-header">
-                <h4>Forgot Password</h4>
+                <h4>Reset Password</h4>
               </div>
 
               <div class="card-body">
-                <p class="text-muted">We will send a link to reset your password</p>
-                <form method="POST" action="{{route('auth.sendForgotPassword')}}">
+                <form method="POST" action="{{route('auth.doResetPassword')}}">
                   @csrf
                   <div class="form-group">
                     <label for="email">Email</label>
-                    <input id="email" type="email" class="form-control" name="email" tabindex="1" required autofocus>
+                    <input id="email" type="email" value="{{$resetPassData->email}}" disabled class="form-control" name="email" tabindex="1">
+                    <input id="token" type="hidden" value="{{$token}}" class="form-control" name="token" tabindex="1" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="password">New Password</label>
+                    <input id="password" type="password" class="form-control" name="password" tabindex="1" required autofocus>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="password_confirmation">Confirm New Password</label>
+                    <input id="password_confirmation" type="password" class="form-control" name="password_confirmation" tabindex="1" required>
                   </div>
 
                   <div class="form-group">
                     <button type="submit" class="btn btn-primary btn-lg btn-block" tabindex="4">
-                      Send Password Reset Link
+                      Reset Password
                     </button>
                   </div>
                 </form>

@@ -8,10 +8,10 @@ use Illuminate\Support\Str;
 use App\Models\User;
 use App\Models\UserVerify;
 use App\Models\UserProfile;
+use App\Models\PasswordReset;
 use Mail;
 use App\Mail\SignupMail;
-
-use function PHPUnit\Framework\throwException;
+use App\Mail\ResetPasswordMail;
 
 class AuthService
 {
@@ -71,8 +71,8 @@ class AuthService
             DB::commit();
             return true;
         } catch (\Throwable $th) {
-            throw new \ErrorException("Error signup process | ".$th->getMessage());
             DB::rollback();
+            throw new \ErrorException("Error signup process | ".$th->getMessage());
             return false;
         }
     }
@@ -84,6 +84,7 @@ class AuthService
             $user = $verifyUser->user;
             if (!$user->is_email_verified) {
                 $verifyUser->user->is_email_verified = 1;
+                $verifyUser->user->email_verified_at = date('Y-m-d H:i:s');
                 $verifyUser->user->save();
                 $message = "Your e-mail is verified. You can now login.";
             } else {
@@ -94,6 +95,74 @@ class AuthService
             throw new \ErrorException($message);
         }
     }
+
+    public function doSendEmailForgotPassword($request)
+    {
+        $request->validate([
+            'email' => 'required|email|exists:users',
+        ]);
+        try {
+            DB::beginTransaction();
+            $token = Str::random(64);
+            $passwordReset = PasswordReset::where('email', $request->input('email'))->first();
+            if (!is_null($passwordReset)) {
+                PasswordReset::where('email', $request->input('email'))->update(['token' => $token]);
+            }else{
+                $passwordReset = PasswordReset::create([
+                    'email' => $request->input('email'),
+                    'token' => $token,
+                    'created_at' => date('Y-m-d H:i:s'),
+                ]);
+            }
+            $resetPasswordMail = new ResetPasswordMail();
+            $resetPasswordMail->email = $passwordReset->email;
+            $resetPasswordMail->token = $token;
+            Mail::to($resetPasswordMail->email)->send($resetPasswordMail);
+            DB::commit();
+            return true;
+        } catch (\Throwable $th) {
+            DB::rollback();
+            throw new \ErrorException("Error signup process | " . $th->getMessage());
+            return false;
+        }
+    }
+
+    public function getResetPassData($token)
+    {
+        $verifyUser = PasswordReset::where('token', $token)->first();
+        if (!is_null($verifyUser)) {
+            $user = User::where('email', $verifyUser->email)->first();
+            return $user;
+        } else {
+            throw new \ErrorException('Sorry your link is not valid, please check again.');
+        }
+    }
+
+    public function doResetPassword($request)
+    {
+        $request->validate([
+            'password' => 'required|confirmed|min:6',
+            'token' => 'required',
+        ]);
+        try {
+            $verifyUser = PasswordReset::where('token', $request->input('token'))->first();
+            if (!is_null($verifyUser)) {
+                DB::beginTransaction();
+                $user = User::where('email', $verifyUser->email)->first();
+                $user->password = Hash::make($request->input('password'));
+                $user->save();
+                DB::commit();
+                return true;
+            } else {
+                throw new \ErrorException('Sorry your email cannot be identified.');
+            }
+        } catch (\Throwable $th) {
+            DB::rollback();
+            throw new \ErrorException("Error reset password | " . $th->getMessage());
+            return false;
+        }
+    }
+
     public function doLogout($request)
     {
         Auth::logout();
