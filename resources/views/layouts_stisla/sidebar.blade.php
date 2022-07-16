@@ -99,12 +99,11 @@
       </li>
       <li class="menu-header">Pages</li>
       <li class="dropdown">
-        <a href="#" class="nav-link has-dropdown"><i class="far fa-user"></i> <span>Auth</span></a>
+        <a href="#" class="nav-link has-dropdown"><i class="far fa-user"></i> <span>Administrator</span></a>
         <ul class="dropdown-menu">
-          <li><a href="auth-forgot-password.html">Forgot Password</a></li> 
-          <li><a href="auth-login.html">Login</a></li> 
-          <li><a href="auth-register.html">Register</a></li> 
-          <li><a href="auth-reset-password.html">Reset Password</a></li> 
+          <li><a href="{{route('admin.settinguser')}}">Setting Users</a></li> 
+          <li><a href="#">Setting Roles</a></li> 
+          <li><a href="#">Setting Permissions</a></li> 
         </ul>
       </li>
       <li class="dropdown">

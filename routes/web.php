@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Admin\SettingUserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,9 +15,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-})->middleware('auth')->name('root');
 Route::get('login', [AuthController::class, 'index'])->name('login');
 Route::post('authenticate', [AuthController::class, 'authenticate'])->name('auth.authenticate');
 Route::post('logout', [AuthController::class, 'logout'])->name('auth.logout');
@@ -29,3 +27,13 @@ Route::get('forgotpassword', [AuthController::class, 'forgotpassword'])->name('a
 Route::post('forgotpassword', [AuthController::class, 'sendEmailForgotPassword'])->name('auth.sendForgotPassword');
 Route::get('account/resetpassword/{token}', [AuthController::class, 'resetpassword'])->name('auth.resetpassword');
 Route::post('resetpassword', [AuthController::class, 'doResetPassword'])->name('auth.doResetPassword');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/', function () {
+        return view('welcome');
+    })->name('root');
+
+    Route::get('admin/settingusers', [SettingUserController::class, 'index'])->name('admin.settinguser');
+    
+    Route::middleware(['role:admin'])->group(function () {});
+});
